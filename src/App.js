@@ -9,7 +9,7 @@ function App() {
   //\\* useState* //\\
   const [tasks, setTasks] = useState([]);
 
-  //\\* C - Create tasks*//\\
+  //\\* C - Create Tasks*//\\
   const handleAddTask = async (newTask) => {
     try {
       const response = await axios.post(API, newTask);
@@ -21,12 +21,11 @@ function App() {
     }
   }
 
-    //\\* R - Read tasks*//\\
+    //\\* R - Read Tasks*//\\
 const getTasks= async()=>{
   try{
     const response= await axios.get(API);
     setTasks(response.data)
-    //TODO: Add a model pop-up for success with setTimeout for 4s for success
   }catch(error){
     error.console(error)
     //TODO: Add a model pop-up for success with setTimeout for 4s for error
@@ -39,11 +38,28 @@ useEffect(()=>{
   getTasks();
 },[])
 
+    //\\* D - Read Tasks*//\\
+
+    const handleDeleteTask = async (taskId) => {
+      try {
+        await axios.delete(`${API}/${taskId}`);
+        setTasks(tasks.filter((task) => task.id !== taskId));
+        //TODO: Add a model pop-up for success with setTimeout for 4s for success
+        
+      } catch (error) {
+        //TODO: Add a model pop-up for success with setTimeout for 4s for error
+        console.error(error);
+        alert(error.message);
+      }
+    };
+    
+
+
   //\\*HTML SECTION*//\\
   return (
     <div className="App">
       <TaskForm onAddTask={handleAddTask}/>  
-      <ShowTasks tasks={tasks} />
+      <ShowTasks tasks={tasks} onDelete={handleDeleteTask}/>
     </div>
   );
 }
