@@ -1,6 +1,8 @@
 import { useState } from 'react';
 
 function TaskForm({ onAddTask }) {
+
+    //\\* useState, but as an object* //\\
   const [task, setTask] = useState({
     date: '',
     startTime: '',
@@ -8,11 +10,15 @@ function TaskForm({ onAddTask }) {
     reminder: ''
   });
 
+      //\\* Form Change* //\\
   const handleFormChange = (event) => {
     const { name, value } = event.target;
-    setTask((prevTask) => ({ ...prevTask, [name]: value }));
+    console.log()
+    setTask((previousTask) => ({ ...previousTask, [name]: value }));
   };
 
+
+    //\\* Submit POST Functionality, but inheriting onAddTask property* //\\
   const handleFormSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -23,12 +29,15 @@ function TaskForm({ onAddTask }) {
         endTime: '',
         reminder: ''
       });
+      //TODO: Add a model pop-up for success with setTimeout for 4s
     } catch (error) {
+      //TODO: Add a model pop-up rather than an alert
       console.error(error);
       alert(`Error: ${error.message}`);
     }
   };
 
+    //\\* HTML SECTION* //\\
   return (
     <div className="task-form">
       <h2>Add a New Task</h2>
