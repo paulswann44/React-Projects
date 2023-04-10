@@ -1,0 +1,9 @@
+.header{
+    outline: red dashed 2px;
+    height: 7rem;
+    /* max-height: 7rem; */
+    display: flex;
+    align-items: center;
+    overflow-x: hidden;
+}
+
