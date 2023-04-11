@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+
 function TaskForm({ onAddTask }) {
 
     //\\* useState, but as an object* //\\
@@ -10,7 +11,7 @@ function TaskForm({ onAddTask }) {
     reminder: ''
   });
 
-      //\\* Form Change* //\\
+      //\\* Form Change *//\\
   const handleFormChange = (event) => {
     const { name, value } = event.target;
     console.log()
@@ -18,7 +19,7 @@ function TaskForm({ onAddTask }) {
   };
 
 
-    //\\* Submit POST Functionality, but inheriting onAddTask property* //\\
+    //\\* Submit POST Functionality, but inheriting onAddTask property *//\\
   const handleFormSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -29,66 +30,64 @@ function TaskForm({ onAddTask }) {
         endTime: '',
         reminder: ''
       });
-      //TODO: Add a model pop-up for success with setTimeout for 4s
     } catch (error) {
-      //TODO: Add a model pop-up rather than an alert
       console.error(error);
       alert(`Error: ${error.message}`);
     }
   };
 
-    //\\* HTML SECTION* //\\
+    //\\* HTML SECTION *//\\
   return (
     <div className="task-form">
-      <h2>Add a New Task</h2>
+       <h2>Add a New Task</h2>
       <form onSubmit={handleFormSubmit}>
-        <div className="form-group">
+       <div className="form-group">
           <label htmlFor="date">Date</label>
-          <input
-            type="date"
-            id="date"
-            name="date"
+           <input
+             type="date"
+             id="date"
+             name="date"
             value={task.date}
-            onChange={handleFormChange}
+           onChange={handleFormChange}
             required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="start-time">Start Time</label>
-          <input
-            type="time"
-            id="start-time"
-            name="startTime"
+           />
+                    </div>
+         <div className="form-group">
+           <label htmlFor="start-time">Start Time</label>
+           <input
+             type="time"
+             id="start-time"
+             name="startTime"
             value={task.startTime}
-            onChange={handleFormChange}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="end-time">End Time</label>
-          <input
+             onChange={handleFormChange}
+             required
+           />
+         </div>
+         <div className="form-group">
+           <label htmlFor="end-time">End Time</label>
+           <input
             type="time"
             id="end-time"
             name="endTime"
             value={task.endTime}
-            onChange={handleFormChange}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="reminder">Reminder</label>
-          <textarea
-            id="reminder"
-            name="reminder"
-            value={task.reminder}
-            onChange={handleFormChange}
+             onChange={handleFormChange}
+             required
+           />
+         </div>
+         <div className="form-group">
+           <label htmlFor="reminder">Reminder</label>
+           <textarea
+             id="reminder"
+             name="reminder"
+             value={task.reminder}
+             onChange={handleFormChange}
             required
           ></textarea>
         </div>
         <button type="submit">Add Task</button>
       </form>
     </div>
+  
   );
 }
-
 export default TaskForm;
