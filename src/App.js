@@ -4,7 +4,7 @@ import TaskForm from './component/TaskForm';
 import ShowTasks from './component/ShowTasks';
 import Scrap from './component/Scrap';
 
-const API = "http://localhost:3000/tasks";
+const API = "http://localhost:3000/tasks/";
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -36,9 +36,9 @@ function App() {
   }, []);
 
   //\\* U- Update Task *//\\
-  const handleEditTask = async (updatedTask) => {
+  const handleEditTask = async (taskId,updatedTask) => {
     try {
-      const response = await axios.put(`${API}/${updatedTask.id}`, updatedTask);
+      const response = await axios.patch(`${API}${taskId}`, updatedTask);
       setTasks((previousTasks) => {
         const updatedTasks = previousTasks.map((task) => {
           if (task.id === response.data.id) {
@@ -55,6 +55,7 @@ function App() {
     }
   };
 
+
   // D - Delete task by ID \\
   const handleDeleteTask = async (taskId) => {
     try {
@@ -70,7 +71,7 @@ function App() {
     <div className="App">
       <TaskForm onAddTask={handleAddTask} />
       {/* <ShowTasks tasks={tasks} onEdit={handleEditTask} onDelete={handleDeleteTask} /> */}
-      <Scrap tasks={tasks} onEdit={handleEditTask} onDelete={handleDeleteTask} />
+      <Scrap tasks={tasks} onUpdate={handleEditTask} onDelete={handleDeleteTask} />
     </div>
   );
 }
