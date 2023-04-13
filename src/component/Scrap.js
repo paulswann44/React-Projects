@@ -1,38 +1,35 @@
 import { useState } from 'react';
+import moment from 'moment';
 
 function Scrap({ tasks, onDelete, onUpdate }) {
   const [editingTaskId, setEditingTaskId] = useState(null);
   const [updatedTask, setUpdatedTask] = useState({
-    date: 'TBD',
-    startTime: 'TBD',
-    endTime: 'TBD',
+    date: moment().format('YYYY-MM-DD'),
+    startTime: moment().format('HH:mm'),
+    endTime: moment().format('HH:mm'),
     reminder: 'Random default'
   });
-//\\* *//\\
+
   const handleDeleteTask = taskId => {
     onDelete(taskId);
   };
 
   const handleEditTask = taskId => {
-    // 1. find by iterating and matching the of ID
     const taskToEdit = tasks.find(task => task.id === taskId);
-    console.log(`handleEditTask => taskToEdit =>${tasks.find(task => task.id === taskId)}`)
-    // 2. 
     setUpdatedTask({
-      date: taskToEdit.date,
-      startTime: taskToEdit.startTime,
-      endTime: taskToEdit.endTime,
+      date: moment(taskToEdit.date).format('YYYY-MM-DD'),
+      startTime: moment(taskToEdit.startTime, 'HH:mm:ss').format('HH:mm'),
+      endTime: moment(taskToEdit.endTime, 'HH:mm:ss').format('HH:mm'),
       reminder: taskToEdit.reminder
     });
     setEditingTaskId(taskId);
   };
-  // async/await in this way ensures that the update operation completes before any subsequent code is executed
+
   const handleInputBlur = async (taskId) => {
     try {
       console.log("Updating task with id:", taskId);
       await onUpdate(taskId, updatedTask);
       console.log("Task updated successfully." , taskId, updatedTask);
-      //Resets the SetEditTaskId
       setEditingTaskId(null);
     } catch (error) {
       console.error(error);
@@ -41,18 +38,15 @@ function Scrap({ tasks, onDelete, onUpdate }) {
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    console.log(`Input "${name}" changed to value:`, value, "Previous State:", updatedTask);
     setUpdatedTask((previousState) => ({
       ...previousState,
-      //creates a key value pair because of the formatting in the JSON Object
       [name]: value
     }));
   };
 
-  const handleCancel = () =>{
-    // Set the Editing Task Id to nothing
-    setEditingTaskId("")
-  }
+  const handleCancel = () => {
+    setEditingTaskId("");
+  };
 
   return (
     <div className="task-list">
@@ -82,37 +76,34 @@ function Scrap({ tasks, onDelete, onUpdate }) {
                 onBlur={() => handleInputBlur(id)}
               />
               <textarea
-               name='reminder'
+                name='reminder'
                 value={updatedTask.reminder}
                 onChange={handleInputChange}
                 onBlur={() => handleInputBlur(id)}
                 rows={3}
               />
-                <button type="submit" 
-                onClick={handleCancel}
-                >
-                  Cancel
-                  </button>
+              <button type="submit" onClick={handleCancel}>
+                Cancel
+              </button>
 
             </>
           ) : (
             <>
-              <div 
-              onDoubleClick={() => handleEditTask(id)}>
-                {date}
-                </div>
               <div onDoubleClick={() => handleEditTask(id)}>
-                {startTime}
-                </div>
+                {moment(date).format('MMM DD, YYYY')}
+              </div>
               <div onDoubleClick={() => handleEditTask(id)}>
-                {endTime}
-                </div>
+                {moment(startTime, 'HH:mm').format('hh:mm A')}
+              </div>
+              <div onDoubleClick={() => handleEditTask(id)}>
+                {moment(endTime, 'HH:mm').format('hh:mm A')}
+              </div>
               <div onDoubleClick={() => handleEditTask(id)}>
                 {reminder}
-                </div>
+              </div>
               <button onClick={() => handleDeleteTask(id)}>
                 Delete
-                </button>
+              </button>
             </>
           )}
         </div>

@@ -6,18 +6,18 @@ Project Description
 
 ### Todo
 
-- [ ] Format Date  
 - [ ] Filter Tasks By Date  
 - [ ] Add CSS/Bootstrap  
-- [ ] Format Time  
 
 ### In Progress
 
-- [ ] input dates as 'today'  
+- [ ] reformat dates via  
 
 ### Done ✓
 
 - [x] Post Request  
 - [x] OnBlur event  
 - [x] Patch Request activates when onBlur event is activated  
+- [x] Format Time  
+- [x] input dates as 'today'  
 
