@@ -1,16 +1,8 @@
-Upcoming Major Features...
-- Create an Edit Button w/ functionality
-- Create a Delete Button w/ functionality via check marks
-- Contacts Feature - email & phone number
-- The Ability to sort via the date
-- Search Bar Functionality
-- Categories or labels 
-    Work
-    Personal
-    Errands
-    Finance
-    Health
-    Home
-    School
-    Family
 
+###Resources
+1. Cancel/Submit Button
+https://www.spguides.com/react-js-cancel-button/
+
+
+2. Time format
+ https://linuxhint.com/display-datetime-in-12-hour-am-pm-format-javascript/

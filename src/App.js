@@ -3,6 +3,9 @@ import { useEffect, useState } from 'react';
 import TaskForm from './component/TaskForm';
 import ShowTasks from './component/ShowTasks';
 import Scrap from './component/Scrap';
+import head from './style/head.css'
+
+
 
 const API = "http://localhost:3000/tasks/";
 

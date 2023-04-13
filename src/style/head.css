@@ -7,3 +7,6 @@
     overflow-x: hidden;
 }
 
+.task-card{
+    outline: red dashed 3px;
+}

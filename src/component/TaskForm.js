@@ -20,9 +20,16 @@ function TaskForm({ onAddTask }) {
 
 
     //\\* Submit POST Functionality, but inheriting onAddTask property *//\\
-  const handleFormSubmit = async (event) => {
+  const handleFormSubmit = async (event) => {    
     event.preventDefault();
     try {
+    //todo: set the default date today local
+    const startTime = new Date(`2000-01-01T${task.startTime}`);
+    const endTime = new Date(`2000-01-01T${task.endTime}`);
+    task.startTime = startTime.toLocaleDateString([],{ hour12:true, hour: 'numeric', minute: 'numeric'});
+    task.endTime = startTime.toLocaleDateString([],{ hour12:true, hour: 'numeric', minute: 'numeric'});
+
+
       await onAddTask(task);
       setTask({
         date: '',
@@ -36,6 +43,9 @@ function TaskForm({ onAddTask }) {
     }
   };
 
+  const today = new Date().toISOString().split('T')[0];
+
+
     //\\* HTML SECTION *//\\
   return (
     <div className="task-form">
@@ -48,6 +58,8 @@ function TaskForm({ onAddTask }) {
              id="date"
              name="date"
             value={task.date}
+            min={ today }
+            max="2030-12-31"
            onChange={handleFormChange}
             required
            />

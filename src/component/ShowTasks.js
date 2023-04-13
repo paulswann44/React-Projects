@@ -1,72 +1,61 @@
-// I want to include an UPDATE FEATURE that updates of a task. 
-//  -- I need an put re
-
 import { useState } from 'react';
 
 function ShowTasks({ tasks, onDelete, onUpdate }) {
-
-    //\\* useState -edit & update*//\\
   const [editingTaskId, setEditingTaskId] = useState(null);
   const [updatedTask, setUpdatedTask] = useState({
-    date: '',
-    startTime: '',
-    endTime: '',
-    reminder: ''
+    date: 'TBD',
+    startTime: 'TBD',
+    endTime: 'TBD',
+    reminder: 'Random default'
   });
-
-    //\\* Connection to App.js*//\\
+//\\* *//\\
   const handleDeleteTask = taskId => {
     onDelete(taskId);
-    console.log(`card with the id of ${taskId} was deleted`)
   };
 
-  
   const handleEditTask = taskId => {
-    setEditingTaskId(taskId);
-
-    const task = tasks.find((task) => task.id === taskId);
-
+    // 1. find by iterating and matching the of ID
+    const taskToEdit = tasks.find(task => task.id === taskId);
+    console.log(`handleEditTask => taskToEdit =>${tasks.find(task => task.id === taskId)}`)
+    // 2. 
     setUpdatedTask({
-      date: task.date,
-      startTime: task.startTime,
-      endTime: task.endTime,
-      reminder: task.reminder
+      date: taskToEdit.date,
+      startTime: taskToEdit.startTime,
+      endTime: taskToEdit.endTime,
+      reminder: taskToEdit.reminder
     });
+    setEditingTaskId(taskId);
   };
 
-  const handleSaveTask = async (taskId) => {
+  const handleInputBlur = async (taskId) => {
     try {
+      console.log("Updating task with id:", taskId);
       await onUpdate(taskId, updatedTask);
+      console.log("Task updated successfully." , taskId, updatedTask);
+      //Resets the SetEditTaskId
       setEditingTaskId(null);
     } catch (error) {
       console.error(error);
-      alert(error);
     }
   };
 
-  const handleCancelEdit = () => {
-    setEditingTaskId(null);
-  };
-
   const handleInputChange = (event) => {
+    console.log('event.target object',event.target);
     const { name, value } = event.target;
+    console.log('event.target object',event.target);
 
+    console.log(`Input "${name}" changed to value:`, value, "Previous State:", updatedTask);
     setUpdatedTask((previousState) => ({
       ...previousState,
+      //creates a key value pair because of the formatting in the JSON Object
       [name]: value
     }));
   };
 
-  const handleInputBlur = (taskId) => {
-    handleSaveTask(taskId);
-  }
-
-// I have to states of editing my reminders: ?(1) Edit= true : (2) Edit= false
-// 1. 
   return (
     <div className="task-list">
       {tasks.map(({ id, date, startTime, endTime, reminder }) => (
-        <div key={id} className="task-card">
+        <div key={id} className="task-card" onDoubleClick={() => handleEditTask(id)}>
           {editingTaskId === id ? (
             <>
               <input
@@ -90,25 +79,31 @@ function ShowTasks({ tasks, onDelete, onUpdate }) {
                 onChange={handleInputChange}
                 onBlur={() => handleInputBlur(id)}
               />
-                <textarea
-                type="time"
-                name="endTime"
+              <textarea
+                name='reminder'
                 value={updatedTask.reminder}
                 onChange={handleInputChange}
                 onBlur={() => handleInputBlur(id)}
               />
-              <button onClick={() => handleSaveTask(id)}>Save</button>
-              <button onClick={handleCancelEdit}>Cancel</button>
             </>
           ) : (
             <>
-              <h3>{date}</h3>
-              <p>
-                {startTime} - {endTime}
-              </p>
-              <p>{reminder}</p>
-              <button onClick={() => handleDeleteTask(id)}>Delete</button>
-              <button onClick={() => handleEditTask(id)}>Edit</button>
+              <div 
+              onDoubleClick={() => handleEditTask(id)}>
+                {date}
+                </div>
+              <div onDoubleClick={() => handleEditTask(id)}>
+                {startTime}
+                </div>
+              <div onDoubleClick={() => handleEditTask(id)}>
+                {endTime}
+                </div>
+              <div onDoubleClick={() => handleEditTask(id)}>
+                {reminder}
+                </div>
+              <button onClick={() => handleDeleteTask(id)}>
+                Delete
+                </button>
             </>
           )}
         </div>
