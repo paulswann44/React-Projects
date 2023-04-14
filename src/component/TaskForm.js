@@ -9,18 +9,6 @@ function TaskForm({ onAddTask }) {
     reminder: ''
   });
 
-  // const handleFormChange = (event) => {
-  //   const { name, value } = event.target;
-
-  //   // Parse the input date value using Moment.js and format it
-  //   const formattedDate = moment(value).format('MMM Do, YYYY');
-
-  //   setTask((previousTask) => ({
-  //     ...previousTask,
-  //     [name]: value,
-  //     date: formattedDate
-  //   }));
-  // };
 
   const handleFormChange = (event) => {
     const { name, value } = event.target;

@@ -1,13 +1,10 @@
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import TaskForm from './component/TaskForm';
-import ShowTasks from './component/ShowTasks';
+// import ShowTasks from './component/ShowTasks';
 import Scrap from './component/Scrap';
-import head from './style/head.css'
+import { getAllTasks, createTask, updateTask, deleteTask } from './api/api';
 
-
-
-const API = "http://localhost:3000/tasks/";
+// const API = "http://localhost:3000/tasks/";
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -15,8 +12,8 @@ function App() {
   //\\* C- Create Task *//\\
   const handleAddTask = async (newTask) => {
     try {
-      const response = await axios.post(API, newTask);
-      setTasks((previousTasks) => [...previousTasks, response.data]);
+      const response = await createTask(newTask);
+      setTasks((previousTasks) => [...previousTasks, response]);
     } catch (error) {
       console.error(error);
       alert(error);
@@ -26,10 +23,10 @@ function App() {
   //\\* R- Read Task *//\\
   const getTasks = async () => {
     try {
-      const response = await axios.get(API);
-      setTasks(response.data);
+      const data = await getAllTasks();
+      setTasks(data);
     } catch (error) {
-      console.error(error);
+      console.error(`the error is ${error}`);
     }
   };
 
@@ -39,13 +36,13 @@ function App() {
   }, []);
 
   //\\* U- Update Task *//\\
-  const handleEditTask = async (taskId,updatedTask) => {
+  const handleEditTask = async (taskId, updatedTask) => {
     try {
-      const response = await axios.patch(`${API}${taskId}`, updatedTask);
+      const response = await updateTask(taskId, updatedTask);
       setTasks((previousTasks) => {
         const updatedTasks = previousTasks.map((task) => {
-          if (task.id === response.data.id) {
-            return response.data;
+          if (task.id === response.id) {
+            return response;
           } else {
             return task;
           }
@@ -58,11 +55,10 @@ function App() {
     }
   };
 
-
   // D - Delete task by ID \\
   const handleDeleteTask = async (taskId) => {
     try {
-      await axios.delete(`${API}/${taskId}`);
+      await deleteTask(taskId);
       setTasks((previousTasks) => previousTasks.filter((task) => task.id !== taskId));
     } catch (error) {
       console.error(error);
@@ -75,6 +71,7 @@ function App() {
       <TaskForm onAddTask={handleAddTask} />
       {/* <ShowTasks tasks={tasks} onEdit={handleEditTask} onDelete={handleDeleteTask} /> */}
       <Scrap tasks={tasks} onUpdate={handleEditTask} onDelete={handleDeleteTask} />
+
     </div>
   );
 }
