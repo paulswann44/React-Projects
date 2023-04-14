@@ -1,115 +1,123 @@
 import { useState } from 'react';
+import moment from 'moment';
 
-function ShowTasks({ tasks, onDelete, onUpdate }) {
+function ShowTasks({ tasks, onDelete, onEdit }) {
   const [editingTaskId, setEditingTaskId] = useState(null);
-  const [updatedTask, setUpdatedTask] = useState({
-    date: 'TBD',
-    startTime: 'TBD',
-    endTime: 'TBD',
-    reminder: 'Random default'
+  const [updatedTask, setUpdatedTask] = useState(null);
+
+  // declare and initialize the filteredTasks variable
+  const filteredTasks = {};
+  tasks.forEach((task) => {
+    const date = moment(task.date).format('MMMM D, YYYY');
+    if (!filteredTasks[date]) {
+      filteredTasks[date] = [];
+    }
+    filteredTasks[date].push(task);
   });
-//\\* *//\\
-  const handleDeleteTask = taskId => {
+
+  const handleDeleteTask = (taskId) => {
     onDelete(taskId);
   };
 
-  const handleEditTask = taskId => {
-    // 1. find by iterating and matching the of ID
-    const taskToEdit = tasks.find(task => task.id === taskId);
-    console.log(`handleEditTask => taskToEdit =>${tasks.find(task => task.id === taskId)}`)
-    // 2. 
+  const handleEditTask = (taskId) => {
+    const taskToEdit = tasks.find((task) => task.id === taskId);
     setUpdatedTask({
-      date: taskToEdit.date,
-      startTime: taskToEdit.startTime,
-      endTime: taskToEdit.endTime,
-      reminder: taskToEdit.reminder
+      date: moment(taskToEdit.date).format('YYYY-MM-DD'),
+      startTime: moment(taskToEdit.startTime, 'HH:mm:ss').format('HH:mm'),
+      endTime: moment(taskToEdit.endTime, 'HH:mm:ss').format('HH:mm'),
+      reminder: taskToEdit.reminder,
     });
     setEditingTaskId(taskId);
   };
 
-  const handleInputBlur = async (taskId) => {
+  const handleSaveTask = async (taskId) => {
     try {
-      console.log("Updating task with id:", taskId);
-      await onUpdate(taskId, updatedTask);
-      console.log("Task updated successfully." , taskId, updatedTask);
-      //Resets the SetEditTaskId
+      console.log('Updating task with id:', taskId);
+      await onEdit(taskId, updatedTask);
+      console.log('Task updated successfully.', taskId, updatedTask);
       setEditingTaskId(null);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleInputChange = (event) => {
-    console.log('event.target object',event.target);
-    const { name, value } = event.target;
-    console.log('event.target object',event.target);
-
-    console.log(`Input "${name}" changed to value:`, value, "Previous State:", updatedTask);
-    setUpdatedTask((previousState) => ({
-      ...previousState,
-      //creates a key value pair because of the formatting in the JSON Object
-      [name]: value
-    }));
+  const handleCancelEdit = () => {
+    setEditingTaskId(null);
+    setUpdatedTask(null);
   };
 
   return (
-    <div className="task-list">
-      {tasks.map(({ id, date, startTime, endTime, reminder }) => (
-        <div key={id} className="task-card" onDoubleClick={() => handleEditTask(id)}>
-          {editingTaskId === id ? (
-            <>
-              <input
-                type="date"
-                name="date"
-                value={updatedTask.date}
-                onChange={handleInputChange}
-                onBlur={() => handleInputBlur(id)}
-              />
-              <input
-                type="time"
-                name="startTime"
-                value={updatedTask.startTime}
-                onChange={handleInputChange}
-                onBlur={() => handleInputBlur(id)}
-              />
-              <input
-                type="time"
-                name="endTime"
-                value={updatedTask.endTime}
-                onChange={handleInputChange}
-                onBlur={() => handleInputBlur(id)}
-              />
-              <textarea
-                name='reminder'
-                value={updatedTask.reminder}
-                onChange={handleInputChange}
-                onBlur={() => handleInputBlur(id)}
-              />
-            </>
-          ) : (
-            <>
-              <div 
-              onDoubleClick={() => handleEditTask(id)}>
-                {date}
-                </div>
-              <div onDoubleClick={() => handleEditTask(id)}>
-                {startTime}
-                </div>
-              <div onDoubleClick={() => handleEditTask(id)}>
-                {endTime}
-                </div>
-              <div onDoubleClick={() => handleEditTask(id)}>
-                {reminder}
-                </div>
-              <button onClick={() => handleDeleteTask(id)}>
-                Delete
-                </button>
-            </>
-          )}
-        </div>
-      ))}
+    <div>
+      <h2>Task List</h2>
+      {Object.keys(filteredTasks)
+        .sort((a, b) => moment(a, 'MMMM D, YYYY') - moment(b, 'MMMM D, YYYY'))
+        .map((date) => (
+          <div key={date}>
+            <h3>{date}</h3>
+            <ul>
+              {filteredTasks[date].map((task) => (
+                <li key={task.id}>
+                  <div>{task.description}</div>
+                  <div>{moment(task.date).format('dddd, MMMM D')}</div>
+                  <div>
+                    {`${moment(task.startTime, 'HH:mm:ss').format('h:mm A')} - ${moment(
+                      task.endTime,
+                      'HH:mm:ss'
+                    ).format('h:mm A')}`}
+                  </div>
+                  <div>{task.reminder}</div>
+                  <div>
+                    {editingTaskId === task.id ? (
+                      <>
+                        <input
+                          type="date"
+                          value={updatedTask.date}
+                          onChange={(e) =>
+                            setUpdatedTask((prev) => ({ ...prev, date: e.target.value }))
+                          }
+                        />
+                        <input
+                          type="time"
+                          value={updatedTask.startTime}
+                          onChange={(e) =>
+                            setUpdatedTask((prev) => ({ ...prev, startTime: e.target.value }))
+                          }
+                        />
+                        <input
+                          type="time"
+                          value={updatedTask.endTime}
+                          onChange={(e) =>
+                            setUpdatedTask((prev) => ({ ...prev, endTime: e.target.value }))
+                          }
+                        />
+                        <input
+                          type="text"
+                          value={updatedTask.reminder}
+                          onChange={(e) =>
+                            setUpdatedTask((prev) => ({ ...prev, reminder: e.target.value }))
+                          }
+                        />
+                        <button onClick={() => handleSaveTask(task.id)}>Save</button>
+                        <button onClick={handleCancelEdit}>Cancel</button>
+                      </>
+                    ) : (
+                      <>
+                        <button onClick={() => handleEditTask(task.id)}>Edit</button>
+                        <button onClick={() => handleDeleteTask(task.id)}>Delete</button>
+                      </>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
     </div>
-  );
-}
+  )};
+  
+
+  
+  
 
 export default ShowTasks;
+  
