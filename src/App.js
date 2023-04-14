@@ -4,8 +4,6 @@ import TaskForm from './component/TaskForm';
 import Scrap from './component/Scrap';
 import { getAllTasks, createTask, updateTask, deleteTask } from './api/api';
 
-// const API = "http://localhost:3000/tasks/";
-
 function App() {
   const [tasks, setTasks] = useState([]);
 
