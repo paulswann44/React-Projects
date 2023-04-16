@@ -20,3 +20,12 @@ export const updateTask = async (id, task) => {
 export const deleteTask = async (id) => {
   await axios.delete(`${API}/${id}`);
 };
+
+export const fetchData =async (searchValue, searchDate) =>{
+  const params={
+    reminder: searchValue,
+    date: searchDate
+  };
+  const response = await axios.get(API, { params });
+  return response.data;
+}

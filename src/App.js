@@ -1,12 +1,17 @@
 import { useEffect, useState } from 'react';
 import moment from 'moment';
 import TaskForm from './component/TaskForm';
-// import TaskList from './component/TaskList';
 import ShowTasks from './component/ShowTasks';
 import { getAllTasks, createTask, updateTask, deleteTask } from './api/api';
+import './style/form.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.min.js';
+import SearchBar from './component/SearchBar';
+
 
 function App() {
   const [tasks, setTasks] = useState([]);
+  const [filteredTasks, setFilteredTasks] = useState([]);
 
   // C - Create Task
   const handleAddTask = async (newTask) => {
@@ -63,10 +68,29 @@ function App() {
     }
   };
 
+  //F - Filter Task
+  const handleSearch = (e) => {
+    const query = e.target.value.toLowerCase();
+    const filteredTasks = tasks.filter(task => {
+      const reminderDate = new Date(task.reminder).toDateString().toLowerCase();
+      return (
+        // TODO: Add start and endTime later
+        // task.startTime.toLowerCase().includes(query) ||
+        // task.endTime.toLowerCase().includes(query) ||
+        task.reminder.toLowerCase().includes(query) ||
+        reminderDate.includes(query)
+      );
+    });
+    setFilteredTasks(filteredTasks);
+  };
+  
+
   return (
-    <div className="App">
+    <div className="App ">
+            <SearchBar tasks={tasks} onSearch={handleSearch} />
       <TaskForm onAddTask={handleAddTask} />
       <ShowTasks
+      task={filteredTasks.length > 0 ? filteredTasks : tasks}
         tasks={tasks}
         onEdit={handleEditTask}
         onDelete={handleDeleteTask}

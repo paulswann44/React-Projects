@@ -12,7 +12,6 @@ function TaskForm({ onAddTask }) {
 
   const handleFormChange = (event) => {
     const { name, value } = event.target;
-  
     if (name === "date") {
       // Parse the input date value using Moment.js and format it
       const formattedDate = moment(value).format("MMM Do, YYYY");
@@ -59,11 +58,13 @@ function TaskForm({ onAddTask }) {
   const today = moment().format('YYYY-MM-DD');
 
   return (
-    <div className="task-form">
-      <h2>Add a New Task</h2>
+    <div className="task-form border border-danger rounded bg-light">
+      <h2 className=" d-flex justify-content-center">Add a New Task</h2>
+
+
       <form onSubmit={handleFormSubmit}>
-        <div className="form-group">
-          <label htmlFor="date">Date</label>
+        <div className="form-group " id="date-container">
+          <label htmlFor="date">Date:</label>
           <input
             type="date"
             id="date"
@@ -74,9 +75,10 @@ function TaskForm({ onAddTask }) {
             onChange={handleFormChange}
             required
           />
+
         </div>
-        <div className="form-group">
-          <label htmlFor="start-time">Start Time</label>
+        <div className="form-group" id="start-time-container">
+          <label htmlFor="start-time">Start Time:</label>
           <input
             type="time"
             id="start-time"
@@ -86,8 +88,8 @@ function TaskForm({ onAddTask }) {
             required
           />
         </div>
-        <div className="form-group">
-          <label htmlFor="end-time">End Time</label>
+        <div className="form-group" id="end-time-container">
+          <label htmlFor="end-time">End Time:</label>
           <input
             type="time"
             id="end-time"
@@ -97,13 +99,15 @@ function TaskForm({ onAddTask }) {
             required
           />
         </div>
-        <div className="form-group">
-          <label htmlFor="reminder">Reminder</label>
+        <div className="form-group" id="reminder-container">
+          <label htmlFor="reminder">Reminder:</label>
           <textarea
             id="reminder"
             name="reminder"
             value={task.reminder}
             onChange={handleFormChange}
+            rows="8"
+            cols="8"
             required
           ></textarea>
         </div>
