@@ -1,28 +1,15 @@
-import { useEffect, useState } from 'react';
-import moment from 'moment';
-import TaskForm from './component/TaskForm';
-import ShowTasks from './component/ShowTasks';
-import { getAllTasks, createTask, updateTask, deleteTask } from './api/api';
-import './style/form.css'
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.min.js';
-import SearchBar from './component/SearchBar';
-
+import React, { useState, useEffect } from "react";
+import "./App.css";
+import TaskList from "./component/ShowTasks";
+import SearchBar from "./component/SearchBar";
+import TaskForm from "./component/TaskForm";
+import { getAllTasks, createTask, updateTask, deleteTask, fetchData } from "./api/api";
 
 function App() {
   const [tasks, setTasks] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchDate, setSearchDate] = useState("");
   const [filteredTasks, setFilteredTasks] = useState([]);
-
-  // C - Create Task
-  const handleAddTask = async (newTask) => {
-    try {
-      const response = await createTask(newTask);
-      setTasks(previousTasks => [...previousTasks, response]);
-    } catch (error) {
-      console.error(error);
-      alert(error);
-    }
-  };
 
   // R - Read Task
   const getTasks = async () => {
@@ -34,67 +21,75 @@ function App() {
     }
   };
 
+  // C - Create Task
+  const addTask = async (task) => {
+    try {
+      const newTask = await createTask(task);
+      setTasks([...tasks, newTask]);
+    } catch (error) {
+      console.error(`the error is ${error}`);
+    }
+  };
+
+  // U - Update Task
+  const updateTaskStatus = async (id) => {
+    try {
+      const taskToUpdate = tasks.find((task) => task.id === id);
+      const updatedTask = await updateTask(id, { ...taskToUpdate, reminder: !taskToUpdate.reminder });
+      setTasks(tasks.map((task) => (task.id === id ? updatedTask : task)));
+    } catch (error) {
+      console.error(`the error is ${error}`);
+    }
+  };
+
+  // D - Delete Task
+  const deleteTaskById = async (id) => {
+    try {
+      await deleteTask(id);
+      setTasks(tasks.filter((task) => task.id !== id));
+    } catch (error) {
+      console.error(`the error is ${error}`);
+    }
+  };
+
   // R - useEffect
   useEffect(() => {
     getTasks();
   }, []);
 
-  // U - Update Task
-  const handleEditTask = async (taskId, updatedTask) => {
+  // handle search
+  const handleSearch = async (e) => {
+    e.preventDefault();
     try {
-      const response = await updateTask(taskId, updatedTask);
-      setTasks(previousTasks => {
-        const updatedTasks = previousTasks.map(task =>
-          task.id === response.id ? response : task
-        );
-        return updatedTasks;
-      });
+      const data = await fetchData(searchQuery, searchDate);
+      setFilteredTasks(data);
     } catch (error) {
-      console.error(error);
-      alert(error);
+      console.error(`the error is ${error}`);
     }
   };
 
-  // D - Delete task by ID
-  const handleDeleteTask = async (taskId) => {
-    try {
-      await deleteTask(taskId);
-      setTasks(previousTasks =>
-        previousTasks.filter(task => task.id !== taskId)
-      );
-    } catch (error) {
-      console.error(error);
-      alert(error);
-    }
-  };
-
-  //F - Filter Task
-  const handleSearch = (e) => {
-    const query = e.target.value.toLowerCase();
-    const filteredTasks = tasks.filter(task => {
-      const reminderDate = new Date(task.reminder).toDateString().toLowerCase();
-      return (
-        // TODO: Add start and endTime later
-        // task.startTime.toLowerCase().includes(query) ||
-        // task.endTime.toLowerCase().includes(query) ||
-        task.reminder.toLowerCase().includes(query) ||
-        reminderDate.includes(query)
-      );
-    });
-    setFilteredTasks(filteredTasks);
-  };
-  
+  // filter tasks based on search query and date
+  useEffect(() => {
+    const filtered = tasks.filter(
+      (task) =>
+        task.reminder.toLowerCase().includes(searchQuery.toLowerCase()) &&
+        task.date.includes(searchDate)
+    );
+    setFilteredTasks(filtered);
+  }, [tasks, searchQuery, searchDate]);
 
   return (
-    <div className="App ">
-            <SearchBar tasks={tasks} onSearch={handleSearch} />
-      <TaskForm onAddTask={handleAddTask} />
-      <ShowTasks
-      task={filteredTasks.length > 0 ? filteredTasks : tasks}
-        tasks={tasks}
-        onEdit={handleEditTask}
-        onDelete={handleDeleteTask}
+    <div className="container">
+      <h1>Task Tracker</h1>
+      <SearchBar
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        searchDate={searchDate}
+        setSearchDate={setSearchDate}
+        onSearch={handleSearch}
       />
+      <TaskForm onAdd={addTask} />
+      <TaskList tasks={filteredTasks} onUpdate={updateTaskStatus} onDelete={deleteTaskById} />
     </div>
   );
 }

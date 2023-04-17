@@ -1,30 +1,81 @@
-import { useState } from "react";
+import { useState } from 'react';
+import Modal from './Modal';
 
-function EditTask({ task, onUpdateTask, onClose }) {
-  const [text, setText] = useState(task.text);
-  const [reminder, setReminder] = useState(task.reminder);
+function EditTasks({ task, onSave, onCancel }) {
+  const [updatedTask, setUpdatedTask] = useState(task);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const updatedTask = { ...task, text, reminder };
-    onUpdateTask(task.id, updatedTask);
-    onClose();
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setUpdatedTask((prevTask) => ({
+      ...prevTask,
+      [name]: value,
+    }));
+  };
+
+  const handleSave = async () => {
+    try {
+      await onSave(updatedTask);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>
-        Text:
-        <input type="text" value={text} onChange={(e) => setText(e.target.value)} />
-      </label>
-      <label>
-        Reminder:
-        <input type="text" value={reminder} onChange={(e) => setReminder(e.target.value)} />
-      </label>
-      <button type="submit">Update Task</button>
-      <button onClick={onClose}>Cancel</button>
-    </form>
+    <Modal>
+      <h2>Edit Task</h2>
+      <form>
+        <div>
+          <label>Description:</label>
+          <input
+            type="text"
+            name="description"
+            value={updatedTask.description}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div>
+          <label>Date:</label>
+          <input
+            type="date"
+            name="date"
+            value={updatedTask.date}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div>
+          <label>Start Time:</label>
+          <input
+            type="time"
+            name="startTime"
+            value={updatedTask.startTime}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div>
+          <label>End Time:</label>
+          <input
+            type="time"
+            name="endTime"
+            value={updatedTask.endTime}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div>
+          <label>Reminder:</label>
+          <input
+            type="text"
+            name="reminder"
+            value={updatedTask.reminder}
+            onChange={handleInputChange}
+          />
+        </div>
+      </form>
+      <div>
+        <button onClick={handleSave}>Save</button>
+        <button onClick={onCancel}>Cancel</button>
+      </div>
+    </Modal>
   );
 }
 
-export default EditTask;
+export default EditTasks;
