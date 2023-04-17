@@ -58,8 +58,7 @@ function ShowTasks({ tasks, onDelete, onEdit }) {
             <ul>
               {filteredTasks[date].map((task) => (
                 <li key={task.id}>
-                  <div>{task.description}</div>
-                  <div>{moment(task.date).format('dddd, MMMM D')}</div>
+                  <div>{moment(task.date).format('dddd')}</div>
                   <div>
                     {`${moment(task.startTime, 'HH:mm:ss').format('h:mm A')} - ${moment(
                       task.endTime,
@@ -76,12 +75,12 @@ function ShowTasks({ tasks, onDelete, onEdit }) {
                           onCancelEdit={handleCancelEdit}
                           onChangeTask={(name, value) => setUpdatedTask((prev) => ({ ...prev, [name]: value }))}
                         />
-                      </> // <-- added closing tag for the fragment
+                      </> 
                     ) : (
                       <>
                         <button onClick={() => handleEditTask(task.id)}>Edit</button>
                         <button onClick={() => handleDeleteTask(task.id)}>Delete</button>
-                      </> // <-- added closing tag for the fragment
+                      </>
                     )}
                     
                   </div>

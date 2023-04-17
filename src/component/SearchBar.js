@@ -10,7 +10,7 @@ function SearchBar({ searchQuery, setSearchQuery, onSearch }) {
       <div>
         <input
           type="text"
-          placeholder="Search tasks or dates"
+          placeholder="Search tasks"
           value={searchQuery}
           onChange={handleSearchChange}
         />
