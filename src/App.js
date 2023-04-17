@@ -4,6 +4,8 @@ import TaskList from "./component/ShowTasks";
 import SearchBar from "./component/SearchBar";
 import TaskForm from "./component/TaskForm";
 import { getAllTasks, createTask, updateTask, deleteTask, fetchData } from "./api/api";
+import moment from "moment";
+
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -22,7 +24,7 @@ function App() {
   };
 
   // C - Create Task
-  const addTask = async (task) => {
+  const handleAddTask = async (task) => {
     try {
       const newTask = await createTask(task);
       setTasks([...tasks, newTask]);
@@ -69,14 +71,20 @@ function App() {
   };
 
   // filter tasks based on search query and date
-  useEffect(() => {
-    const filtered = tasks.filter(
-      (task) =>
-        task.reminder.toLowerCase().includes(searchQuery.toLowerCase()) &&
-        task.date.includes(searchDate)
-    );
-    setFilteredTasks(filtered);
-  }, [tasks, searchQuery, searchDate]);
+
+
+
+useEffect(() => {
+  const filtered = tasks.filter((task) =>
+    task.reminder.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    moment(task.date).format("YYYY-MM-DD") === moment(searchDate).format("YYYY-MM-DD")
+  );
+  setFilteredTasks(filtered);
+}, [tasks, searchQuery, searchDate]);
+
+  
+
+  
 
   return (
     <div className="container">
@@ -88,7 +96,9 @@ function App() {
         setSearchDate={setSearchDate}
         onSearch={handleSearch}
       />
-      <TaskForm onAdd={addTask} />
+      {/* <TaskForm onAdd={addTask} /> */}
+      <TaskForm onAddTask={handleAddTask} />
+
       <TaskList tasks={filteredTasks} onUpdate={updateTaskStatus} onDelete={deleteTaskById} />
     </div>
   );
