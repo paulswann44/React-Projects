@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import "./App.css";
+// import "./App.css";
 import TaskList from "./component/ShowTasks";
 import SearchBar from "./component/SearchBar";
 import TaskForm from "./component/TaskForm";
-import { getAllTasks, createTask, updateTask, deleteTask, fetchData } from "./api/api";
+import { getAllTasks, createTask, updateTask, deleteTask, fetchData } from "./services/api";
 import moment from "moment";
 
 

@@ -13,7 +13,6 @@ function TaskForm({ onAddTask }) {
   const handleFormChange = (event) => {
     const { name, value } = event.target;
     if (name === "date") {
-      // Parse the input date value using Moment.js and format it
       const formattedDate = moment(value).format("MMM Do, YYYY");
       setTask((previousTask) => ({
         ...previousTask,
